@@ -1,0 +1,19 @@
+{
+  "name": "web-app-yellow-pages",
+  "version": "1.0.0",
+  "description": "Search users through a single search input",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BaldissaraMatheus/web-app-yellow-pages.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BaldissaraMatheus/web-app-yellow-pages/issues"
+  },
+  "homepage": "https://github.com/BaldissaraMatheus/web-app-yellow-pages#readme"
+}
