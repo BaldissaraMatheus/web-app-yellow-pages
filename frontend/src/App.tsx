@@ -1,3 +1,4 @@
+import React from 'react';
 import './App.css';
 
 function App() {
@@ -6,7 +7,7 @@ function App() {
       <h1 className="text-2xl mb-4">Users list</h1>
       <form className="mb-4">
         <label>
-          <span class="text-sm">Search User</span>
+          <span className="text-sm">Search User</span>
           <input
             type="text"
             name="search"
@@ -19,10 +20,9 @@ function App() {
               py-2
               px-3
               border-2
-              border-gray-600
+              border-gray-300
               text-sm
               text-gray-800
-              rounded-lg
               shadow-sm
               focus:outline-none
               focus:ring
