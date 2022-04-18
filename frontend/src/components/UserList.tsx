@@ -6,7 +6,6 @@ interface IUsersListProps {
 }
 
 function UsersList(props: IUsersListProps) {
-	console.log('rendered!')
 	return (
 		<table className="table-fixed w-full shadow-lg mb-4">
 			<thead>

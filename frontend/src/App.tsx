@@ -28,7 +28,17 @@ function App() {
         .shift();
 
       const age = words
-        .filter(word => /\d/.test(word) && word.length <= 3)
+        .map((word, i) => ({
+          curr: word,
+          next: i < words.length - 1 ? words[i + 1] : null,
+          index: i
+        }))
+        .filter(word => /\d/.test(word.curr)
+          && word.curr.length <= 3
+          // Prevents identifying the first 3 characters of a phone number as age
+          && (word.next === null || !/[0-9-]{7,8}$/.test(word.next))
+        )
+        .map(word => word.curr)
         .shift();
 
       // Ex: 0521264178, 052126-4178, (052)1264178, (052)126-4178

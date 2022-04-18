@@ -28,7 +28,7 @@ async function findAll(searchParams: IUserSearch): Promise<{ users: IUserRespons
 	}
 	if (searchParams.phone) {
 		// @ts-ignore
-		users.find(user => user.phone_number === phone);
+		users = users.filter(user => user.phone_number === searchParams.phone);
 	}
 	let usersWithImage: any[] = await Promise.all(
 		users.map(async (user) => ({ ...user, picture: await encodeToBase64(user.picture) })
