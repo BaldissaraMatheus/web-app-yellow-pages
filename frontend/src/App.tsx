@@ -3,6 +3,7 @@ import { useDebouncedText } from './hooks/useDebouncedText'
 import './App.css';
 import usersService from './services/users.service';
 import { IUserRender, IUserSearch } from './user';
+import UserItem from './components/UserItem';
 
 function App() {
   const [searchValue, setSearchValue] = useState('');
@@ -55,27 +56,6 @@ function App() {
     pageLoad.current = true;
   }, [debouncedText]);
 
-  function renderUserRows(users: IUserRender[]) {
-    return users.map((user, i) => (
-      <tr
-        key={`user-${i}`}
-        className="children:p-2 border-2 border-gray-200 text-gray-800"
-      >
-        <td>
-          <img
-            src={`data:image/png;base64, ${user.picture}`}
-            className="inline mr-2 w-10"
-            loading="lazy"
-          />
-          {user.name}
-        </td>
-        <td>{user.age}</td>
-        <td>{user.phone}</td>
-        <td>{user.address}</td>
-      </tr>
-    ));
-  }
-
   return (
     <main className="container mx-auto mt-8">
       <h1 className="text-2xl mb-4">Users list</h1>
@@ -110,17 +90,24 @@ function App() {
       <table className="table-fixed w-full shadow-lg mb-4">
         <thead>
           <tr className="children:p-2 text-gray-800 text-left border-2 border-gray-200">
-            <th className="">Name</th>
+            <th>Name</th>
             <th>Age</th>
             <th>Phone</th>
             <th>Address</th>
           </tr>
         </thead>
         <tbody>
-          { renderUserRows(users) }
+          {users.map((user, i) => <UserItem
+            name={user.name}
+            address={user.address}
+            age={user.age}
+            phone={user.phone}
+            picture={`data:image/png;base64, ${user.picture}`}
+            key={`user-${i}`}
+          />)}
         </tbody>
       </table>
-      { users.length === 0 ? <h2>No results, please review your search or try a different one</h2> : <></> }
+      {users.length === 0 ? <h2>No results, please review your search or try a different one</h2> : <></>}
     </main>
   );
 }

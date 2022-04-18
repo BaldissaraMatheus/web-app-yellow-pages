@@ -3,10 +3,16 @@ import { readFile } from 'fs/promises';
 import { IUserModel, IUserResponse, IUserSearch } from './user';
 
 async function encodeToBase64(filePath: string) {
-	return readFile(`${process.cwd()}/src/data/images/${filePath}`, { encoding: 'base64' });
+	try {
+		const img = await readFile(`${process.cwd()}/src/data/images/${filePath}`, { encoding: 'base64' });
+		return img;
+	} catch (err) {
+		console.log(err);
+		return null;
+	}
 }
 
-async function findAll(searchParams: IUserSearch): Promise<{ users: any[], total: number }> {
+async function findAll(searchParams: IUserSearch): Promise<{ users: IUserResponse[], total: number }> {
 	const fileContent = await readFile(`${process.cwd()}/src/data/contacts.json`, 'utf-8');
 	let users: IUserModel[] = JSON.parse(fileContent);
 	const total = users.length;
@@ -24,7 +30,7 @@ async function findAll(searchParams: IUserSearch): Promise<{ users: any[], total
 		// @ts-ignore
 		users.find(user => user.phone_number === phone);
 	}
-	users = await Promise.all(
+	let usersWithImage: any[] = await Promise.all(
 		users.map(async (user) => ({ ...user, picture: await encodeToBase64(user.picture) })
 	));
 
