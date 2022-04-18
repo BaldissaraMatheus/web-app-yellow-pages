@@ -80,6 +80,7 @@ function App() {
               focus:outline-none
               focus:ring
             "
+            data-testid="search-input"
             value={searchValue}
             onChange={(ev) => setSearchValue(ev.target.value)}
           >
@@ -106,7 +107,7 @@ function App() {
           />)}
         </tbody>
       </table>
-      {users.length === 0 ? <h2>No results, please review your search or try a different one</h2> : <></>}
+      {users.length === 0 ? <h2 data-testid="no-results">No results, please review your search or try a different one</h2> : <></>}
     </main>
   );
 }

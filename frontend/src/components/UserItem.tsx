@@ -5,6 +5,7 @@ function UserItem(props: IUserRender) {
 	return (
 		<tr
 			className="children:p-2 border-2 border-gray-200 text-gray-800"
+			data-testid="user-item"
 		>
 			<td>
 				<img
