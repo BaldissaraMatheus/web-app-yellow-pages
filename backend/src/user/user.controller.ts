@@ -34,7 +34,7 @@ async function findAll(searchParams: IUserSearch): Promise<{ users: IUserRespons
 		users.map(async (user) => ({ ...user, picture: await encodeToBase64(user.picture) })
 	));
 
-	const newUsers: IUserResponse[] = users.map(user => ({
+	const newUsers: IUserResponse[] = usersWithImage.map(user => ({
 		address: user.address,
 		name: user.name,
 		picture: user.picture,

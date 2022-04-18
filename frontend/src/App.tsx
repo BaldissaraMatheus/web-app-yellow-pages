@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useDebouncedText } from './hooks/useDebouncedText'
 import './App.css';
 import usersService from './services/users.service';
@@ -8,7 +8,7 @@ import UserItem from './components/UserItem';
 function App() {
   const [searchValue, setSearchValue] = useState('');
   const [users, setUsers] = useState<IUserRender[]>([]);
-  const debouncedText = useDebouncedText(searchValue, 500);
+  const debouncedText = useDebouncedText(searchValue, 500).trim();
   const pageLoad = useRef(false);
 
   function fetchUsers(searchParams: IUserSearch) {
@@ -20,7 +20,6 @@ function App() {
   useEffect(() => {
     if (pageLoad.current && debouncedText !== '') {
       const words = debouncedText
-        .trim()
         .split(' ')
         .filter(word => word !== '');
 
