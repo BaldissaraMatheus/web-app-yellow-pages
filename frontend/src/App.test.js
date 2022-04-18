@@ -11,7 +11,7 @@ test('When user types 125, it must show the "no results" message', async () => {
   fireEvent.change(input, { target: { value: '125' } });
   const mockRequest = nock(API_URL)
     .get('/users',)
-    .query({ age: 125 })
+    .query({ age: '125' })
     .reply(200, [],{
       'Access-Control-Allow-Origin': '*',
       'Content-type': 'application/json'
