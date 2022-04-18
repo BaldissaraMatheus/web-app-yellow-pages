@@ -1,11 +1,85 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDebouncedText } from './hooks/useDebouncedText'
 import './App.css';
+import usersService from './services/users.service';
+import { IUserRender, IUserSearch } from './user';
 
 function App() {
+  const [searchValue, setSearchValue] = useState('');
+  const [users, setUsers] = useState<IUserRender[]>([]);
+  const debouncedText = useDebouncedText(searchValue, 500);
+  const pageLoad = useRef(false);
+
+  function fetchUsers(searchParams: IUserSearch) {
+    usersService.findAll(searchParams)
+      .then(json => setUsers(json))
+      .catch(err => console.error(err));
+  }
+
+  useEffect(() => {
+    if (pageLoad.current && debouncedText !== '') {
+      const words = debouncedText
+        .trim()
+        .split(' ')
+        .filter(word => word !== '');
+
+      const name = words
+        .filter(word => /[a-zA-Z]/.test(word))
+        .shift();
+
+      const age = words
+        .filter(word => /\d/.test(word) && word.length <= 3)
+        .shift();
+
+      // Ex: 0521264178, 052126-4178, (052)1264178, (052)126-4178
+      const unbrokenPhones = words
+        .filter(word => /^[0-9()-]{10,13}$/.test(word))
+        .map(word => word.replace(/[-()/]/gi, ''))
+
+      // Ex: (052) 1264178, (052) 126-4178, 052 1264178, 052 126-4178
+      let brokenPhones = words
+        .slice(0, words.length - 1)
+        .map((word, i) => ({ curr: word, next: words[i + 1], index: i }))
+        .filter(wordObj => /^[0-9()-]{3,5}$/.test(wordObj.curr)
+          && /[0-9-]{7,8}$/.test(wordObj.next)
+        )
+        .map(word => `${word.curr}${word.next}`.replace(/[-()/]/gi, ''))
+
+      const phone = [...unbrokenPhones, ...brokenPhones]
+        .map(phone => `(${phone.substring(0, 3)}) ${phone.substring(3)}`)
+        .shift();
+
+      fetchUsers({ name, age, phone })
+
+    }
+    pageLoad.current = true;
+  }, [debouncedText]);
+
+  function renderUserRows(users: IUserRender[]) {
+    return users.map((user, i) => (
+      <tr
+        key={`user-${i}`}
+        className="children:p-2 border-2 border-gray-200 text-gray-800"
+      >
+        <td>
+          <img
+            src={`data:image/png;base64, ${user.picture}`}
+            className="inline mr-2 w-10"
+            loading="lazy"
+          />
+          {user.name}
+        </td>
+        <td>{user.age}</td>
+        <td>{user.phone}</td>
+        <td>{user.address}</td>
+      </tr>
+    ));
+  }
+
   return (
     <main className="container mx-auto mt-8">
       <h1 className="text-2xl mb-4">Users list</h1>
-      <form className="mb-4">
+      <form className="mb-4" onSubmit={e => e.preventDefault()}>
         <label>
           <span className="text-sm">Search User</span>
           <input
@@ -27,13 +101,15 @@ function App() {
               focus:outline-none
               focus:ring
             "
+            value={searchValue}
+            onChange={(ev) => setSearchValue(ev.target.value)}
           >
           </input>
         </label>
       </form>
-      <table className="table-fixed w-full shadow-lg">
+      <table className="table-fixed w-full shadow-lg mb-4">
         <thead>
-          <tr className="children:p-2 text-gray-500 text-left border-2 border-gray-200">
+          <tr className="children:p-2 text-gray-800 text-left border-2 border-gray-200">
             <th className="">Name</th>
             <th>Age</th>
             <th>Phone</th>
@@ -41,26 +117,10 @@ function App() {
           </tr>
         </thead>
         <tbody>
-          <tr className="children:p-2 border-2 border-gray-200 text-gray-800">
-            <td>Malcolm Lockyer</td>
-            <td>91</td>
-            <td>123412345</td>
-            <td>1961</td>
-          </tr>
-          <tr className="children:p-2 border-2 border-gray-200 text-gray-800">
-            <td>Witchy Woman</td>
-            <td>51</td>
-            <td>123412345</td>
-            <td>1961</td>
-          </tr>
-          <tr className="children:p-2 border-2 border-gray-200 text-gray-800">
-            <td>Shining Star</td>
-            <td>18</td>
-            <td>123412345</td>
-            <td>1961</td>
-          </tr>
+          { renderUserRows(users) }
         </tbody>
       </table>
+      { users.length === 0 ? <h2>No results, please review your search or try a different one</h2> : <></> }
     </main>
   );
 }
