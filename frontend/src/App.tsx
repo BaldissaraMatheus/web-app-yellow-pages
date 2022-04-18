@@ -3,7 +3,7 @@ import { useDebouncedText } from './hooks/useDebouncedText'
 import './App.css';
 import usersService from './services/users.service';
 import { IUserRender, IUserSearch } from './user';
-import UserItem from './components/UserItem';
+import UserList from './components/UserList';
 
 function App() {
   const [searchValue, setSearchValue] = useState('');
@@ -87,27 +87,11 @@ function App() {
           </input>
         </label>
       </form>
-      <table className="table-fixed w-full shadow-lg mb-4">
-        <thead>
-          <tr className="children:p-2 text-gray-800 text-left border-2 border-gray-200">
-            <th>Name</th>
-            <th>Age</th>
-            <th>Phone</th>
-            <th>Address</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user, i) => <UserItem
-            name={user.name}
-            address={user.address}
-            age={user.age}
-            phone={user.phone}
-            picture={`data:image/png;base64, ${user.picture}`}
-            key={`user-${i}`}
-          />)}
-        </tbody>
-      </table>
-      {users.length === 0 ? <h2 data-testid="no-results">No results, please review your search or try a different one</h2> : <></>}
+      <UserList users={users} />
+      {users.length === 0
+        ? <h2 data-testid="no-results">No results, please review your search or try a different one</h2>
+        : <></>
+      }
     </main>
   );
 }
